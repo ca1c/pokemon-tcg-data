@@ -46,6 +46,14 @@ async function JSONGenerator(filesPath, files) {
     return allDocs;
 }
 
+async function fillCollection(collection, dir) {
+    const filesPath = path.join(__dirname, dir);
+    let files = await getDirFiles(filesPath);
+    let allDocs = await JSONGenerator(filesPath, files);
+    const InsertResult = await collection.insertMany(allDocs);
+    console.log('Inserted Deck Documents =>', InsertResult);
+} 
+
 async function main() {
     await client.connect();
     console.log('Connected successfully to mongodb server');
@@ -53,18 +61,8 @@ async function main() {
     const deckCollection = db.collection('decks');
     const cardCollection = db.collection('cards');
 
-    //Starting with decks to get the basic info
-    const decksPath = path.join(__dirname, 'decks/en');
-    let deckFiles = await getDirFiles(decksPath);
-    let allDecks = await JSONGenerator(decksPath, deckFiles);
-    const deckInsertResult = await deckCollection.insertMany(allDecks);
-    console.log('Inserted Deck Documents =>', deckInsertResult);
-
-    const cardsPath = path.join(__dirname, 'cards/en');
-    let cardFiles = await getDirFiles(cardsPath);
-    let allCards = await JSONGenerator(cardsPath, cardFiles);
-    const cardInsertResult = await cardCollection.insertMany(allCards);
-    console.log('Inserted Card Dcouments =>', cardInsertResult);
+    await fillCollection(deckCollection, 'decks/en');
+    await fillCollection(cardCollection, 'cards/en');
 
     return 'done.';
 }
