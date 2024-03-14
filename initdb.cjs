@@ -54,11 +54,17 @@ async function main() {
     const cardCollection = db.collection('cards');
 
     //Starting with decks to get the basic info
-    const deckPath = path.join(__dirname, 'decks/en');
-    let files = await getDirFiles(deckPath);
-    let allDecks = await JSONGenerator(deckPath, files);
-    const insertResult = await deckCollection.insertMany(allDecks);
-    console.log('Inserted Documents =>', insertResult);
+    const decksPath = path.join(__dirname, 'decks/en');
+    let deckFiles = await getDirFiles(decksPath);
+    let allDecks = await JSONGenerator(decksPath, deckFiles);
+    const deckInsertResult = await deckCollection.insertMany(allDecks);
+    console.log('Inserted Deck Documents =>', deckInsertResult);
+
+    const cardsPath = path.join(__dirname, 'cards/en');
+    let cardFiles = await getDirFiles(cardsPath);
+    let allCards = await JSONGenerator(cardsPath, cardFiles);
+    const cardInsertResult = await cardCollection.insertMany(allCards);
+    console.log('Inserted Card Dcouments =>', cardInsertResult);
 
     return 'done.';
 }
