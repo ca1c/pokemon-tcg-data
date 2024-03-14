@@ -6,6 +6,11 @@ const client = new MongoClient(url);
 
 const dbName = 'pokemontest';
 
+/**
+ * Gets all of the files in a given directory
+ * @param {string} filesPath the directory of the files
+ * @returns {Array} the list of the files in the given directory
+ */
 async function getDirFiles(filesPath) {
     try {
         const tempFiles = await fs.readdir(filesPath);
@@ -13,10 +18,15 @@ async function getDirFiles(filesPath) {
     }
     catch(err) {
         console.log(err);
-        return err;
     }
 }
 
+/**
+ * Reads .json file and returns parsed JSON
+ * @param {string} fileDir the directory of the file
+ * @param {string} file the .json file
+ * @returns {*} parsed json, as javascript object, or array
+ */
 async function getFileJSON(fileDir, file) {
     try {
         const filePath = path.resolve(path.join(fileDir, file));
@@ -28,6 +38,12 @@ async function getFileJSON(fileDir, file) {
     }
 }
 
+/**
+ * Creates and returns list of documents from a directory of json files
+ * @param {string} filesPath path of the files
+ * @param {Array} files array of file names
+ * @returns {Array} array of all json docs from the directory
+ */
 async function JSONGenerator(filesPath, files) {
     if(files.length < 1) {
         return "no files provided";
@@ -46,6 +62,11 @@ async function JSONGenerator(filesPath, files) {
     return allDocs;
 }
 
+/**
+ * Populates mongodb collection with array of documents
+ * @param {Object} collection collection that will be populated
+ * @param {string} dir directory of files that contain json docs necessary for collection population
+ */
 async function fillCollection(collection, dir) {
     const filesPath = path.join(__dirname, dir);
     let files = await getDirFiles(filesPath);
@@ -60,9 +81,11 @@ async function main() {
     const db = client.db(dbName);
     const deckCollection = db.collection('decks');
     const cardCollection = db.collection('cards');
+    const setCollection = db.collection('sets');
 
     await fillCollection(deckCollection, 'decks/en');
     await fillCollection(cardCollection, 'cards/en');
+    await fillCollection(setCollection, 'sets');
 
     return 'done.';
 }
