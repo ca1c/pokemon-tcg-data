@@ -1,5 +1,4 @@
 {
-  "type": "module",
   "name": "pokemon-tcg-data",
   "version": "1.0.0",
   "description": "building a mongodb db from these json files",
