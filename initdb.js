@@ -54,9 +54,7 @@ async function JSONGenerator(filesPath, files) {
     for(const file of files) {
         let JSONDocs = await getFileJSON(filesPath, file);
 
-        for(const doc of JSONDocs) {
-            allDocs.push(doc);
-        }
+        allDocs.concat(JSONDocs);
     }
 
     return allDocs;
